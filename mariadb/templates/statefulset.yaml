@@ -19,12 +19,8 @@ spec:
         - name: mariadb
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          args:
-            - "--character-set-server=utf8mb4"
-            - "--collation-server=utf8mb4_unicode_ci"
           ports:
-            - containerPort: 3306
-              name: mysql
+            - containerPort: {{ .Values.service.targetPort }}
           env:
             - name: MYSQL_ROOT_PASSWORD
               value: "{{ .Values.env.MYSQL_ROOT_PASSWORD }}"
@@ -37,31 +33,6 @@ spec:
           volumeMounts:
             - name: mariadb-data
               mountPath: /var/lib/mysql
-          livenessProbe:
-            exec:
-              command:
-                - mysqladmin
-                - ping
-                - -h
-                - localhost
-                - -u
-                - {{ .Values.env.MYSQL_USER }}
-                - --password={{ .Values.env.MYSQL_PASSWORD }}
-            initialDelaySeconds: 30
-            periodSeconds: 10
-          readinessProbe:
-            exec:
-              command:
-                - mysqladmin
-                - ping
-                - -h
-                - localhost
-                - -u
-                - {{ .Values.env.MYSQL_USER }}
-                - --password={{ .Values.env.MYSQL_PASSWORD }}
-            initialDelaySeconds: 30
-            periodSeconds: 10
       volumes:
         - name: mariadb-data
-          persistentVolumeClaim:
-            claimName: mariadb-pvc
+          emptyDir: {}  # Using emptyDir to store data temporarily

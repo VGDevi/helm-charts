@@ -18,11 +18,6 @@ tolerations: []
 
 affinity: {}
 
-persistence:
-  enabled: true
-  size: 10Gi
-  storageClass: standard
-
 env:
   VIKUNJA_SERVICE_PUBLICURL: http://example.com
   VIKUNJA_DATABASE_HOST: mariadb

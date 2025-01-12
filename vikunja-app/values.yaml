@@ -1,0 +1,48 @@
+replicaCount: 1
+
+image:
+  repository: vikunja/vikunja
+  tag: "latest"
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 3456
+  targetPort: 3456
+
+resources: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+persistence:
+  enabled: true
+  size: 10Gi
+  storageClass: standard
+
+env:
+  VIKUNJA_SERVICE_PUBLICURL: http://example.com
+  VIKUNJA_DATABASE_HOST: db
+  VIKUNJA_DATABASE_PASSWORD: changeme
+  VIKUNJA_DATABASE_TYPE: mysql
+  VIKUNJA_DATABASE_USER: vikunja
+  VIKUNJA_DATABASE_DATABASE: vikunja
+  VIKUNJA_SERVICE_JWTSECRET: supersecuresecret
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/proxy-body-size: 10m
+  hosts:
+    - host: vikunja.example.com
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls:
+    - secretName: vikunja-tls
+      hosts:
+        - vikunja.example.com

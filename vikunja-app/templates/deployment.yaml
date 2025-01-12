@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vikunja
+  labels:
+    app: vikunja
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: vikunja
+  template:
+    metadata:
+      labels:
+        app: vikunja
+    spec:
+      containers:
+        - name: vikunja
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.service.targetPort }}
+          env:
+            - name: VIKUNJA_SERVICE_PUBLICURL
+              value: "{{ .Values.env.VIKUNJA_SERVICE_PUBLICURL }}"
+            - name: VIKUNJA_DATABASE_HOST
+              value: "{{ .Values.env.VIKUNJA_DATABASE_HOST }}"
+            - name: VIKUNJA_DATABASE_PASSWORD
+              value: "{{ .Values.env.VIKUNJA_DATABASE_PASSWORD }}"
+            - name: VIKUNJA_DATABASE_TYPE
+              value: "{{ .Values.env.VIKUNJA_DATABASE_TYPE }}"
+            - name: VIKUNJA_DATABASE_USER
+              value: "{{ .Values.env.VIKUNJA_DATABASE_USER }}"
+            - name: VIKUNJA_DATABASE_DATABASE
+              value: "{{ .Values.env.VIKUNJA_DATABASE_DATABASE }}"
+            - name: VIKUNJA_SERVICE_JWTSECRET
+              value: "{{ .Values.env.VIKUNJA_SERVICE_JWTSECRET }}"
+          volumeMounts:
+            - name: vikunja-files
+              mountPath: /app/vikunja/files
+          readinessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.service.targetPort }}
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.service.targetPort }}
+            initialDelaySeconds: 20
+            periodSeconds: 10
+      volumes:
+        - name: vikunja-files
+          persistentVolumeClaim:
+            claimName: vikunja-files-pvc

@@ -1,0 +1,29 @@
+replicaCount: 1
+
+image:
+  repository: mariadb
+  tag: "10"
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 3306
+
+resources: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+persistence:
+  enabled: true
+  size: 10Gi
+  storageClass: standard
+
+env:
+  MYSQL_ROOT_PASSWORD: supersecret
+  MYSQL_USER: vikunja
+  MYSQL_PASSWORD: changeme
+  MYSQL_DATABASE: vikunja

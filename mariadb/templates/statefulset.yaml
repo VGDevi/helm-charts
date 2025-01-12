@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mariadb
+  labels:
+    app: mariadb
+spec:
+  serviceName: mariadb
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: mariadb
+  template:
+    metadata:
+      labels:
+        app: mariadb
+    spec:
+      containers:
+        - name: mariadb
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args:
+            - "--character-set-server=utf8mb4"
+            - "--collation-server=utf8mb4_unicode_ci"
+          ports:
+            - containerPort: 3306
+              name: mysql
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: "{{ .Values.env.MYSQL_ROOT_PASSWORD }}"
+            - name: MYSQL_USER
+              value: "{{ .Values.env.MYSQL_USER }}"
+            - name: MYSQL_PASSWORD
+              value: "{{ .Values.env.MYSQL_PASSWORD }}"
+            - name: MYSQL_DATABASE
+              value: "{{ .Values.env.MYSQL_DATABASE }}"
+          volumeMounts:
+            - name: mariadb-data
+              mountPath: /var/lib/mysql
+          livenessProbe:
+            exec:
+              command:
+                - mysqladmin
+                - ping
+                - -h
+                - localhost
+                - -u
+                - {{ .Values.env.MYSQL_USER }}
+                - --password={{ .Values.env.MYSQL_PASSWORD }}
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            exec:
+              command:
+                - mysqladmin
+                - ping
+                - -h
+                - localhost
+                - -u
+                - {{ .Values.env.MYSQL_USER }}
+                - --password={{ .Values.env.MYSQL_PASSWORD }}
+            initialDelaySeconds: 30
+            periodSeconds: 10
+      volumes:
+        - name: mariadb-data
+          persistentVolumeClaim:
+            claimName: mariadb-pvc

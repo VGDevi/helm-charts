@@ -52,5 +52,4 @@ spec:
             periodSeconds: 10
       volumes:
         - name: vikunja-files
-          persistentVolumeClaim:
-            claimName: vikunja-files-pvc
+          emptyDir: {}  # Using ephemeral storage (emptyDir) instead of PVC

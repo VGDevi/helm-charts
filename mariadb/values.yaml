@@ -5,24 +5,31 @@ image:
   tag: "10"
   pullPolicy: IfNotPresent
 
-service:
-  type: ClusterIP
-  port: 3306
-  targetPort: 3306
+mariadb:
+  rootPassword: supersecret
+  user: vikunja
+  password: changeme
+  database: vikunja
+
+persistence:
+  enabled: true
+  accessMode: ReadWriteOnce
+  size: 1Gi
 
 resources: {}
 
-nodeSelector: {}
+livenessProbe:
+  enabled: true
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+  successThreshold: 1
 
-tolerations: []
-
-affinity: {}
-
-env:
-  MYSQL_ROOT_PASSWORD: supersecret
-  MYSQL_USER: vikunja
-  MYSQL_PASSWORD: changeme
-  MYSQL_DATABASE: vikunja
-
-persistence:
-  enabled: false  # No PVC
+readinessProbe:
+  enabled: true
+  initialDelaySeconds: 5
+  periodSeconds: 5
+  timeoutSeconds: 5
+  failureThreshold: 3
+  successThreshold: 1

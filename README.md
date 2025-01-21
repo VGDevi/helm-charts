@@ -15,12 +15,32 @@ This repository outlines the deployment of a full-stack application consisting o
    - **Persistent Volume Claim (PVC)**: Data is persisted using PVCs, ensuring data is maintained even during pod restarts.
    - **Justification**: StatefulSets are ideal for applications like databases where data consistency and persistence are crucial.
 
-## Optional: Keycloak IAM Setup
+## Kubernetes Configuration Management with Kustomize and Keycloak
 
-when project involves user authentication and role-based access, **Keycloak** is integrated as the Identity and Access Management (IAM) solution. This provides:
-   - **Secure access** to the application.
-   - Simplified user authentication and authorization.
-   - **Role-based access control (RBAC)**.
+This project demonstrates how to use **Kustomize** for managing Kubernetes configurations and integrates **Keycloak** as the Identity and Access Management (IAM) solution.
+
+---
+
+### Features
+
+- Centralized user authentication and authorization using **Keycloak**.
+- Role-Based Access Control (**RBAC**) for secure application access.
+- Environment-specific configuration management using **Kustomize**.
+
+---
+
+### Directory Structure
+
+  ```
+  keycloak/
+├── base/
+│   ├── deployment.yaml
+│   ├── service.yaml
+│   └── kustomization.yaml
+├── overlays/
+    ├── dev/
+        └── kustomization.yaml
+  ```
 
 ## Optimization Considerations
 

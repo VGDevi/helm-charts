@@ -15,7 +15,7 @@ This repository outlines the deployment of a full-stack application consisting o
    - **Persistent Volume Claim (PVC)**: Data is persisted using PVCs, ensuring data is maintained even during pod restarts.
    - **Justification**: StatefulSets are ideal for applications like databases where data consistency and persistence are crucial.
 
-## Kubernetes Configuration Management with Kustomize and Keycloak
+### Kubernetes Configuration Management with Kustomize and Keycloak
 
 This project demonstrates how to use **Kustomize** for managing Kubernetes configurations and integrates **Keycloak** as the Identity and Access Management (IAM) solution.
 
@@ -38,8 +38,10 @@ This project demonstrates how to use **Kustomize** for managing Kubernetes confi
 │   ├── service.yaml
 │   └── kustomization.yaml
 ├── overlays/
-    ├── dev/
-        └── kustomization.yaml
+    │
+    └── dev/
+        ├── kustomization.yaml
+        └── patch.yaml
   ```
 
 ## Optimization Considerations

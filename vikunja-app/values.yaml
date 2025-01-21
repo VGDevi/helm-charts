@@ -8,23 +8,45 @@ image:
 vikunja:
   publicURL: http://vikunja.local
   jwtSecret: dskfj23kkjsdkjsdfjkl3sdfgfsdfhsdfkh3ozxpqzx
+  config: |
+    database:
+      type: mysql
+      user: vikunja
+      password: changeme
+      host: mariadb-mariadb.default.svc.cluster.local
+    service:
+      interface: :10220
+      JWTSecret: k7TWkTwmZXq7LtEvvt8SPdJ9ohUJh5mE
+      timezone: "UTC"
+      maxitemsperpage: 50
+      enablecaldav: true
+      enablelinksharing: true
+      enableuserdeletion: true
+      enabletaskattachments: true
+      enabletop: true
+      enableemailreminders: true
+      maxavatarsize: 1024
 
-database:
-  host: mariadb-mariadb-0.mariadb-mariadb.default.svc.cluster.local
-  port: 3306
-  user: vikunja
-  password: changeme
-  name: vikunja
-  type: mysql
+    log:
+      enabled: true
+      path: "/app/vikunja/logs"
+      level: "INFO"
+
+    auth:
+      openid:
+        enabled: true
+        redirecturl: "https://vikunja.vikunja.click/auth/openid/"
+        providers:
+          - name: "Keycloak"
+            authurl: "https://keycloak.vikunja.click/realms/vikunja"
+            logouturl: "http://keycloak.vikunja.click/realms/vikunja/protocol/openid-connect/logout"
+            clientid: "vikunja"
+            clientsecret: "0uh22R3P6U7bY3uJmmxZxAZbP5fadtPD"
 
 persistence:
   enabled: true
   accessMode: ReadWriteOnce
   size: 1Gi
-
-service:
-  type: ClusterIP
-  port: 3456
 
 resources: {}
 
@@ -34,6 +56,8 @@ ingress:
   annotations:
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
-service:
-  port: 80
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:039612885735:certificate/d80198c4-0b80-4548-91af-b2a37a287239
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS": 443}]'
 
+service:
+  port: 10220

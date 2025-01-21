@@ -18,43 +18,21 @@ spec:
         - name: vikunja
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          env:
-            - name: VIKUNJA_SERVICE_PUBLICURL
-              value: {{ .Values.vikunja.publicURL }}
-            - name: VIKUNJA_DATABASE_HOST
-              value: {{ .Values.database.host }}
-            - name: VIKUNJA_DATABASE_PORT
-              value: "{{ .Values.database.port }}"
-            - name: VIKUNJA_DATABASE_USER
-              value: {{ .Values.database.user }}
-            - name: VIKUNJA_DATABASE_PASSWORD
-              value: {{ .Values.database.password }}
-            - name: VIKUNJA_DATABASE_TYPE
-              value: {{ .Values.database.type }}
-            - name: VIKUNJA_DATABASE_DATABASE
-              value: {{ .Values.database.name }}
-            - name: VIKUNJA_SERVICE_JWTSECRET
-              value: {{ .Values.vikunja.jwtSecret }}
           ports:
             - name: web
-              containerPort: 3456
+              containerPort: 10220
           volumeMounts:
             - name: vikunja-files
               mountPath: /app/vikunja/files
+            - name: vikunja-config
+              mountPath: /etc/vikunja/config.yaml
+              subPath: config.yaml
       volumes:
         - name: vikunja-files
           persistentVolumeClaim:
             claimName: {{ .Release.Name }}-vikunja-pvc
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: {{ .Release.Name }}-vikunja-pvc
-  labels:
-    app: {{ .Chart.Name }}
-spec:
-  accessModes:
-    - {{ .Values.persistence.accessMode }}
-  resources:
-    requests:
-      storage: {{ .Values.persistence.size }}
+        - name: vikunja-config
+          secret:
+            defaultMode: 420
+            optional: false
+            secretName: {{ .Release.Name }}-vikunja-config

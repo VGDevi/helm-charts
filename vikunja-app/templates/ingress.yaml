@@ -10,7 +10,8 @@ metadata:
 spec:
   ingressClassName: {{ .Values.ingress.className }}
   rules:
-    - http:
+    - host: {{ .Release.Name }}.vikunja.click
+      http:
         paths:
           - path: /
             pathType: Prefix

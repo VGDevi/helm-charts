@@ -42,6 +42,10 @@ This project demonstrates how to use **Kustomize** for managing Kubernetes confi
     └── dev/
         ├── kustomization.yaml
         └── patch.yaml
+
+kustomize build keycloak/overlays/dev
+
+kubectl apply -k keycloak/overlays/dev
   ```
 
 ## Optimization Considerations

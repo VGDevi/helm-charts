@@ -48,8 +48,13 @@ persistence:
   accessMode: ReadWriteOnce
   size: 1Gi
 
-resources: {}
-
+resources:
+  limits:
+     cpu: 1
+     memory: 1Gi
+  requests:
+     cpu: "512m"
+     memory: "512Mi"
 ingress:
   enabled: true
   className: "alb"
